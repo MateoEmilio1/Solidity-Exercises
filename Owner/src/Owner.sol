@@ -17,6 +17,8 @@ contract OnlyOwner {
     }
 
     function updateMagicNumber(uint256 _number) public {
+        //It works as a transaction in a database, if the condition is not met, the transaction is reverted.
+        require(msg.sender == owner, "Only owner can update magic number");
         magicNumber = _number;
     }
 }
