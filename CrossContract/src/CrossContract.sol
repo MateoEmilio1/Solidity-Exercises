@@ -3,7 +3,8 @@ pragma solidity ^0.8.13;
 
 contract CrossContract {
     /**
-     * The function below is to call the price function of PriceOracle1 and PriceOracle2 contracts below and return the lower of the two prices
+     * The function below is to call the price function of PriceOracle1 and PriceOracle2 
+     contracts below and return the lower of the two prices
      */
 
     function getLowerPrice(
@@ -11,6 +12,17 @@ contract CrossContract {
         address _priceOracle2
     ) external view returns (uint256) {
         // your code here
+        (bool success1, bytes memory data1) = _priceOracle1.staticcall(abi.encodeWithSignature("price()"));
+        //(bool success1, bytes memory data1) = _priceOracle1.call(abi.encodeWithSignature("price()"));
+        require(success1, "Failed to get price from PriceOracle1");
+        uint256 price1 = abi.decode(data1, (uint256));
+
+        (bool success2, bytes memory data2) = _priceOracle2.staticcall(abi.encodeWithSignature("price()"));
+        //(bool success2, bytes memory data2) = _priceOracle2.call(abi.encodeWithSignature("price()"));
+        require(success2, "Failed to get price from PriceOracle2");
+        uint256 price2 = abi.decode(data2, (uint256));
+
+        return price1 < price2 ? price1 : price2;
     }
 }
 
